@@ -12,6 +12,9 @@ def _cart_id(request):
 
 
 def add_cart(request, product_id):
+    color = request.GET["color"]  # it is comming from name of select tag atrribute
+    size = request.GET["size"]  # it is comming from name of select tag atrribute
+
     product = Product.objects.get(id=product_id)
     try:
         cart = Cart.objects.get(cart_id=_cart_id(request))
@@ -44,12 +47,14 @@ def remove_cart(request, product_id):
         cart_item.delete()
     return redirect("cart")
 
+
 def delete_cart_item(request, product_id):
     cart = Cart.objects.get(cart_id=_cart_id(request))
     product = get_object_or_404(Product, id=product_id)
     cart_item = CartItem.objects.get(product=product, cart=cart)
     cart_item.delete()
     return redirect("cart")
+
 
 def cart(request, total=0, quantity=0, cart_item=None):
     try:
