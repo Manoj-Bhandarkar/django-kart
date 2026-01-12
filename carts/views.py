@@ -3,6 +3,7 @@ from store.models import Product
 from .models import Cart, CartItem
 from django.core.exceptions import ObjectDoesNotExist
 
+
 def _cart_id(request):
     cart = request.session.create()
     if not cart:
@@ -31,7 +32,8 @@ def add_cart(request, product_id):
         cart_item.save()
     return redirect("cart")
 
-def remove_cart(request,product_id):
+
+def remove_cart(request, product_id):
     cart = Cart.objects.get(cart_id=_cart_id(request))
     product = get_object_or_404(Product, id=product_id)
     cart_item = CartItem.objects.get(product=product, cart=cart)
@@ -40,17 +42,19 @@ def remove_cart(request,product_id):
         cart_item.save()
     else:
         cart_item.delete()
-    return redirect('cart')
+    return redirect("cart")
 
-def delete_cart_item(request,product_id):
+def delete_cart_item(request, product_id):
     cart = Cart.objects.get(cart_id=_cart_id(request))
     product = get_object_or_404(Product, id=product_id)
     cart_item = CartItem.objects.get(product=product, cart=cart)
     cart_item.delete()
-    return redirect('cart')
+    return redirect("cart")
 
 def cart(request, total=0, quantity=0, cart_item=None):
     try:
+        tax = 0
+        grand_total = 0
         cart = Cart.objects.get(cart_id=_cart_id(request))
         cart_items = CartItem.objects.filter(cart=cart, is_active=True)
         for cart_item in cart_items:
@@ -65,7 +69,7 @@ def cart(request, total=0, quantity=0, cart_item=None):
         "total": total,
         "quantity": quantity,
         "cart_items": cart_items,
-        "tax":tax,
+        "tax": tax,
         "grand_total": grand_total,
     }
     return render(request, "store/cart.html", context)
