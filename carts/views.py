@@ -12,8 +12,10 @@ def _cart_id(request):
 
 
 def add_cart(request, product_id):
-    color = request.GET["color"]  # it is comming from name of select tag atrribute
-    size = request.GET["size"]  # it is comming from name of select tag atrribute
+    if request.method == 'POST':
+        color = request.POST['color']  # it is comming from name of select tag atrribute
+        size = request.POST['size']  # it is comming from name of select tag atrribute
+        print(color, size)
 
     product = Product.objects.get(id=product_id)
     try:
